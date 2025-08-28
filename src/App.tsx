@@ -1,35 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import CurrentMood from "./comp/CurrentMood";
+import ChangeButton from "./comp/ChangeButton";
+import Header from "./comp/Header";
+import "./App.css";
+
+type MoodLabel = "Happy" | "Sad" | "Angry";
+
+const moods: { emoji: string; label: MoodLabel }[] = [
+  { emoji: "😀", label: "Happy" },
+  { emoji: "😢", label: "Sad" },
+  { emoji: "😡", label: "Angry" },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentMood, setCurrentMood] = useState({ emoji: "😐", label: "Neutral" });
+
+  const [history, setHistory] = useState([{ emoji: "😐", label: "Neutral" }]);
+
+  const [counters, setCounters] = useState<Record<MoodLabel, number>>({
+    Happy: 0,
+    Sad: 0,
+    Angry: 0,
+  });
+
+  const changeMood = (mood: { emoji: string; label: MoodLabel }) => {
+    setCurrentMood(mood);
+    setHistory((prev) => [...prev, mood].slice(-4)); // שומרים רק את הנוכחי + 3 קודמים
+    setCounters((prev) => ({ ...prev, [mood.label]: prev[mood.label] + 1 }));
+  };
+
+  const randomMood = () => {
+    const randomIndex = Math.floor(Math.random() * moods.length);
+    changeMood(moods[randomIndex]);
+  };
+
+  const resetMood = () => {
+    const neutral = { emoji: "😐", label: "Neutral" };
+    setCurrentMood(neutral);
+    setHistory([neutral]);
+    setCounters({ Happy: 0, Sad: 0, Angry: 0 });
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div>
+      <Header />
+      <CurrentMood mood={currentMood} />
+
+      <div style={{ margin: "10px 0" }}>
+        {moods.map((mood) => (
+          <ChangeButton
+            key={mood.label}
+            textButton={`${mood.emoji} ${mood.label}`}
+            setButtonText={() => changeMood(mood)}
+          />
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+
+      <button onClick={randomMood}>Random Mood</button>
+      <button onClick={resetMood}>Reset</button>
+
+      <h3>History (last 3 moods):</h3>
+      <ul>
+        {history.slice(-4, -1).map((m, i) => (
+          <li key={i}>
+            {m.emoji} {m.label}
+          </li>
+        ))}
+      </ul>
+
+      <h3>Mood Counters:</h3>
+      <p>
+        😀 Happy: {counters.Happy} | 😢 Sad: {counters.Sad} | 😡 Angry: {counters.Angry}
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
