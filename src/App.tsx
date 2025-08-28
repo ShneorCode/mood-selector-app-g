@@ -25,7 +25,7 @@ function App() {
 
   const changeMood = (mood: { emoji: string; label: MoodLabel }) => {
     setCurrentMood(mood);
-    setHistory((prev) => [...prev, mood].slice(-4)); // שומרים רק את הנוכחי + 3 קודמים
+    setHistory((prev) => [...prev, mood].slice(-4)); 
     setCounters((prev) => ({ ...prev, [mood.label]: prev[mood.label] + 1 }));
   };
 
