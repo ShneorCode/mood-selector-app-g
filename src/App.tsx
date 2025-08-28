@@ -46,7 +46,7 @@ function App() {
       <Header />
       <CurrentMood mood={currentMood} />
 
-      <div style={{ margin: "10px 0" }}>
+      <div>
         {moods.map((mood) => (
           <ChangeButton
             key={mood.label}
