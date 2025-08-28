@@ -1,5 +1,3 @@
-import React from "react";
-
 type Mood = {
   emoji: string;
   label: string;
