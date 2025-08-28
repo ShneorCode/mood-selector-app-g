@@ -6,7 +6,7 @@ type Mood = {
 export default function CurrentMood({ mood }: { mood: Mood }) {
   return (
     <div className="CurrentMood">
-      <span style={{ fontSize: "2rem" }}>{mood.emoji}</span>
+      <span>{mood.emoji}</span>
       <p>{mood.label}</p>
     </div>
   );
